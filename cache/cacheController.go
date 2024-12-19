@@ -10,6 +10,11 @@ type TokenCache struct {
 	tokens map[string]*structs.Token
 }
 
+type TokenCacheInterface interface {
+	GetToken(tokenValue string) (*structs.Token, bool)
+	SetToken(tokenValue string, token *structs.Token)
+}
+
 func NewTokenCache() *TokenCache {
 	return &TokenCache{
 		tokens: make(map[string]*structs.Token),

@@ -6,15 +6,36 @@ import (
 	"module_example/structs"
 )
 
-type TokenRepository struct {
-	DB    *sql.DB
-	Cache *cache.TokenCache
+type DBInterface interface {
+	QueryRow(query string, args ...interface{}) RowInterface
+	Exec(query string, args ...interface{}) (sql.Result, error)
+}
+type DBWrapper struct {
+	*sql.DB
 }
 
-func NewTokenRepository(db *sql.DB, cache *cache.TokenCache) *TokenRepository {
+func (db *DBWrapper) QueryRow(query string, args ...interface{}) RowInterface {
+	return db.DB.QueryRow(query, args...)
+}
+
+func (db *DBWrapper) Exec(query string, args ...interface{}) (sql.Result, error) {
+	return db.DB.Exec(query, args...)
+}
+
+type TokenRepositoryInterface interface {
+	GetToken(token string) (*structs.Token, error)
+}
+type RowInterface interface {
+	Scan(dest ...interface{}) error
+}
+type TokenRepository struct {
+	DB    DBInterface
+	Cache cache.TokenCacheInterface
+}
+
+func NewTokenRepository(db DBInterface, cache cache.TokenCacheInterface) *TokenRepository {
 	return &TokenRepository{DB: db, Cache: cache}
 }
-
 func (r *TokenRepository) GetToken(tokenValue string) (*structs.Token, error) {
 	if token, exists := r.Cache.GetToken(tokenValue); exists {
 		return token, nil

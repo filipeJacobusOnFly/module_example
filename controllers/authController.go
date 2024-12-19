@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware(tokenRepo *repositories.TokenRepository) gin.HandlerFunc {
+func AuthMiddleware(tokenRepo repositories.TokenRepositoryInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {

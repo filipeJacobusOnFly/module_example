@@ -5,7 +5,7 @@ import (
 )
 
 type Token struct {
-	ID      uint      `gorm:"primaryKey"`
-	Token   string    `gorm:"uniqueIndex"`
-	ExpDate time.Time `gorm:"not null"`
+	ID      uint      `json:"id"`
+	Token   string    `json:"token"`
+	ExpDate time.Time `json:"date"`
 }

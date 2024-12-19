@@ -6,7 +6,11 @@ import (
 
 var RecordChannel = make(chan structs.Record, 10000)
 
-func StartBatchProcessing(repo *RecordRepository) {
+type RecordRepositoryInterface interface {
+	CreateRecords(records []structs.Record) error
+}
+
+func StartBatchProcessing(repo RecordRepositoryInterface) {
 	var records []structs.Record
 
 	for record := range RecordChannel {

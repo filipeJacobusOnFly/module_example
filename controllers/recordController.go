@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"time"
 
 	"module_example/repositories"
 	"module_example/structs"
@@ -19,7 +18,10 @@ func RecordHandler(repo *repositories.RecordRepository) gin.HandlerFunc {
 			return
 		}
 
-		record.Date = time.Now()
+		if record.RecordID == 0 || record.Date.IsZero() {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
+			return
+		}
 
 		repositories.RecordChannel <- record
 

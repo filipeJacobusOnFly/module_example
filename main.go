@@ -51,8 +51,8 @@ func main() {
 	}
 
 	db := GetCon()
-
-	tokenRepo := repositories.NewTokenRepository(db, cacheInstance)
+	dbWrapper := &repositories.DBWrapper{DB: db}
+	tokenRepo := repositories.NewTokenRepository(dbWrapper, cacheInstance)
 	recordRepo := repositories.NewRecordRepository(db)
 
 	r := gin.Default()
