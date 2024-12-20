@@ -1,17 +1,17 @@
 package repositories
 
 import (
-	"module_example/structs"
+	"module_example/models"
 	"testing"
 	"time"
 )
 
 type MockRecordRepository struct {
-	Records []structs.Record
+	Records []models.Record
 	Err     error
 }
 
-func (m *MockRecordRepository) CreateRecords(records []structs.Record) error {
+func (m *MockRecordRepository) CreateRecords(records []models.Record) error {
 	if m.Err != nil {
 		return m.Err
 	}
@@ -24,7 +24,7 @@ func TestStartBatchProcessing(t *testing.T) {
 	go StartBatchProcessing(repo)
 
 	for i := 0; i < 10000; i++ {
-		RecordChannel <- structs.Record{
+		RecordChannel <- models.Record{
 			RecordID: uint(i),
 			Date:     time.Now(),
 		}

@@ -5,38 +5,38 @@ import (
 	"testing"
 	"time"
 
-	"module_example/structs"
+	"module_example/models"
 )
 
 type MockTokenCache struct {
-	tokens map[string]*structs.Token
+	tokens map[string]*models.Token
 }
 
 func NewMockTokenCache() *MockTokenCache {
-	return &MockTokenCache{tokens: make(map[string]*structs.Token)}
+	return &MockTokenCache{tokens: make(map[string]*models.Token)}
 }
 
-func (m *MockTokenCache) GetToken(tokenValue string) (*structs.Token, bool) {
+func (m *MockTokenCache) GetToken(tokenValue string) (*models.Token, bool) {
 	token, exists := m.tokens[tokenValue]
 	return token, exists
 }
 
-func (m *MockTokenCache) SetToken(tokenValue string, token *structs.Token) {
+func (m *MockTokenCache) SetToken(tokenValue string, token *models.Token) {
 	m.tokens[tokenValue] = token
 }
 
 type TokenCache interface {
-	GetToken(tokenValue string) (*structs.Token, bool)
-	SetToken(tokenValue string, token *structs.Token)
+	GetToken(tokenValue string) (*models.Token, bool)
+	SetToken(tokenValue string, token *models.Token)
 }
 
 type MockRow struct {
-	token structs.Token
+	token models.Token
 	err   error
 }
 
 type MockDB struct {
-	tokens map[string]structs.Token
+	tokens map[string]models.Token
 }
 
 func (db *MockDB) QueryRow(query string, args ...interface{}) RowInterface {
@@ -44,7 +44,7 @@ func (db *MockDB) QueryRow(query string, args ...interface{}) RowInterface {
 }
 
 func NewMockDB() *MockDB {
-	return &MockDB{tokens: make(map[string]structs.Token)}
+	return &MockDB{tokens: make(map[string]models.Token)}
 }
 
 func (mr *MockRow) Scan(dest ...interface{}) error {
@@ -58,7 +58,7 @@ func (mr *MockRow) Scan(dest ...interface{}) error {
 }
 
 func (db *MockDB) Exec(query string, args ...interface{}) (sql.Result, error) {
-	token := structs.Token{
+	token := models.Token{
 		Token:   args[0].(string),
 		ExpDate: args[1].(time.Time),
 	}
@@ -71,7 +71,7 @@ func TestGetToken_CacheHit(t *testing.T) {
 	db := NewMockDB()
 	repo := NewTokenRepository(db, cache)
 
-	token := &structs.Token{ID: 1, Token: "test-token", ExpDate: time.Now()}
+	token := &models.Token{ID: 1, Token: "test-token", ExpDate: time.Now()}
 	cache.SetToken("test-token", token)
 
 	result, err := repo.GetToken("test-token")
@@ -88,7 +88,7 @@ func TestCreateToken(t *testing.T) {
 	db := NewMockDB()
 	repo := NewTokenRepository(db, cache)
 
-	token := structs.Token{Token: "new-token", ExpDate: time.Now()}
+	token := models.Token{Token: "new-token", ExpDate: time.Now()}
 	err := repo.CreateToken(token)
 	if err != nil {
 		t.Fatalf("Erro inesperado: %v", err)

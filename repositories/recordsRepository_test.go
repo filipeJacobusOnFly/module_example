@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"module_example/models"
 	"module_example/repositories"
-	"module_example/structs"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -25,7 +25,7 @@ func TestCreateRecords(t *testing.T) {
 
 	repo := repositories.NewRecordRepository(db)
 
-	records := []structs.Record{
+	records := []models.Record{
 		{RecordID: 1, Date: time.Now()},
 		{RecordID: 2, Date: time.Now()},
 	}

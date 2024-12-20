@@ -3,7 +3,7 @@ package repositories
 import (
 	"database/sql"
 	"module_example/cache"
-	"module_example/structs"
+	"module_example/models"
 )
 
 type DBInterface interface {
@@ -23,7 +23,7 @@ func (db *DBWrapper) Exec(query string, args ...interface{}) (sql.Result, error)
 }
 
 type TokenRepositoryInterface interface {
-	GetToken(token string) (*structs.Token, error)
+	GetToken(token string) (*models.Token, error)
 }
 type RowInterface interface {
 	Scan(dest ...interface{}) error
@@ -36,12 +36,12 @@ type TokenRepository struct {
 func NewTokenRepository(db DBInterface, cache cache.TokenCacheInterface) *TokenRepository {
 	return &TokenRepository{DB: db, Cache: cache}
 }
-func (r *TokenRepository) GetToken(tokenValue string) (*structs.Token, error) {
+func (r *TokenRepository) GetToken(tokenValue string) (*models.Token, error) {
 	if token, exists := r.Cache.GetToken(tokenValue); exists {
 		return token, nil
 	}
 
-	var token structs.Token
+	var token models.Token
 
 	query := "SELECT id, token, exp_date FROM tokens WHERE token = $1"
 	row := r.DB.QueryRow(query, tokenValue)
@@ -59,7 +59,7 @@ func (r *TokenRepository) GetToken(tokenValue string) (*structs.Token, error) {
 	return &token, nil
 }
 
-func (r *TokenRepository) CreateToken(token structs.Token) error {
+func (r *TokenRepository) CreateToken(token models.Token) error {
 	query := "INSERT INTO tokens (token, exp_date) VALUES ($1, $2)"
 	_, err := r.DB.Exec(query, token.Token, token.ExpDate)
 	return err

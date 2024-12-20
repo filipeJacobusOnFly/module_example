@@ -3,15 +3,15 @@ package controllers
 import (
 	"net/http"
 
+	"module_example/models"
 	"module_example/repositories"
-	"module_example/structs"
 
 	"github.com/gin-gonic/gin"
 )
 
 func RecordHandler(repo *repositories.RecordRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var record structs.Record
+		var record models.Record
 
 		if err := c.ShouldBindJSON(&record); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})

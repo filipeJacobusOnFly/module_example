@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"database/sql"
-	"module_example/structs"
+	"module_example/models"
 )
 
 type RecordRepository struct {
@@ -13,7 +13,7 @@ func NewRecordRepository(db *sql.DB) *RecordRepository {
 	return &RecordRepository{DB: db}
 }
 
-func (r *RecordRepository) CreateRecords(records []structs.Record) error {
+func (r *RecordRepository) CreateRecords(records []models.Record) error {
 	tx, err := r.DB.Begin()
 	if err != nil {
 		return err

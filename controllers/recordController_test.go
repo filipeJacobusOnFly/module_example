@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"module_example/controllers"
+	"module_example/models"
 	"module_example/repositories"
-	"module_example/structs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -20,7 +20,7 @@ func TestRecordHandler(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	repo := &repositories.RecordRepository{}
-	repositories.RecordChannel = make(chan structs.Record, 10000)
+	repositories.RecordChannel = make(chan models.Record, 10000)
 
 	defer close(repositories.RecordChannel)
 
@@ -28,7 +28,7 @@ func TestRecordHandler(t *testing.T) {
 	router.POST("/record", controllers.RecordHandler(repo))
 
 	t.Run("Deve retornar 202 ao receber um registro válido", func(t *testing.T) {
-		record := structs.Record{
+		record := models.Record{
 			RecordID: 1,
 			Date:     time.Now(),
 		}

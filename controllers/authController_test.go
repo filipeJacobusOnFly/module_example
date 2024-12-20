@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"module_example/structs"
+	"module_example/models"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -15,9 +15,9 @@ type MockTokenRepository struct {
 	mock.Mock
 }
 
-func (m *MockTokenRepository) GetToken(token string) (*structs.Token, error) {
+func (m *MockTokenRepository) GetToken(token string) (*models.Token, error) {
 	args := m.Called(token)
-	return args.Get(0).(*structs.Token), args.Error(1)
+	return args.Get(0).(*models.Token), args.Error(1)
 }
 
 func TestAuthMiddleware(t *testing.T) {
@@ -28,7 +28,7 @@ func TestAuthMiddleware(t *testing.T) {
 		authHeader         string
 		expectedStatusCode int
 		expectedResponse   string
-		mockToken          *structs.Token
+		mockToken          *models.Token
 		mockError          error
 	}{}
 

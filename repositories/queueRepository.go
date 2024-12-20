@@ -1,17 +1,17 @@
 package repositories
 
 import (
-	"module_example/structs"
+	"module_example/models"
 )
 
-var RecordChannel = make(chan structs.Record, 10000)
+var RecordChannel = make(chan models.Record, 10000)
 
 type RecordRepositoryInterface interface {
-	CreateRecords(records []structs.Record) error
+	CreateRecords(records []models.Record) error
 }
 
 func StartBatchProcessing(repo RecordRepositoryInterface) {
-	var records []structs.Record
+	var records []models.Record
 
 	for record := range RecordChannel {
 		records = append(records, record)
