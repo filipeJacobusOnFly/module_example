@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"module_example/repositories"
+	repositories "module_example/src/http/repository"
 	"net/http"
 	"strings"
 

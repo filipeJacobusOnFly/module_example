@@ -1,9 +1,9 @@
-package repositories
+package database
 
 import (
 	"database/sql"
-	"module_example/cache"
-	"module_example/models"
+	cache "module_example/src/http/cache"
+	"module_example/src/http/models"
 )
 
 type DBInterface interface {

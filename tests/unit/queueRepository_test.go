@@ -1,7 +1,8 @@
-package repositories
+package unit
 
 import (
-	"module_example/models"
+	"module_example/src/http/models"
+	repositories "module_example/src/http/repository"
 	"testing"
 	"time"
 )
@@ -21,16 +22,16 @@ func (m *MockRecordRepository) CreateRecords(records []models.Record) error {
 
 func TestStartBatchProcessing(t *testing.T) {
 	repo := &MockRecordRepository{}
-	go StartBatchProcessing(repo)
+	go repositories.StartBatchProcessing(repo)
 
 	for i := 0; i < 10000; i++ {
-		RecordChannel <- models.Record{
+		repositories.RecordChannel <- models.Record{
 			RecordID: uint(i),
 			Date:     time.Now(),
 		}
 	}
 
-	close(RecordChannel)
+	close(repositories.RecordChannel)
 
 	time.Sleep(1 * time.Second)
 

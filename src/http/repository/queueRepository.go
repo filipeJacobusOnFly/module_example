@@ -1,7 +1,7 @@
-package repositories
+package database
 
 import (
-	"module_example/models"
+	"module_example/src/http/models"
 )
 
 var RecordChannel = make(chan models.Record, 10000)

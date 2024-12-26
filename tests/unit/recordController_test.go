@@ -1,4 +1,4 @@
-package controllers_test
+package unit
 
 import (
 	"bytes"
@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"module_example/controllers"
-	"module_example/models"
-	"module_example/repositories"
+	"module_example/src/http/controllers"
+	"module_example/src/http/models"
+	repositories "module_example/src/http/repository"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"

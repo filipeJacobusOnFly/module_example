@@ -1,6 +1,7 @@
-package controllers
+package unit
 
 import (
+	controllers "module_example/src/http/controllers"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -13,7 +14,7 @@ func TestPdfHandler(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	router := gin.Default()
-	router.GET("/pdf", PdfHandler)
+	router.GET("/pdf", controllers.PdfHandler)
 
 	t.Run("should return 400 when URL is not provided", func(t *testing.T) {
 		req, _ := http.NewRequest(http.MethodGet, "/pdf", nil)

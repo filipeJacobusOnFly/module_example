@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"module_example/models"
-	"module_example/repositories"
+	"module_example/src/http/models"
+	repositories "module_example/src/http/repository"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,8 +22,6 @@ func RecordHandler(repo *repositories.RecordRepository) gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
 			return
 		}
-
-		repositories.RecordChannel <- record
 
 		c.JSON(http.StatusAccepted, gin.H{"message": "Registro recebido"})
 	}

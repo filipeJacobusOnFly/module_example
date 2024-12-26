@@ -1,11 +1,11 @@
-package repositories
+package unit
 
 import (
 	"database/sql"
+	"module_example/src/http/models"
+	repositories "module_example/src/http/repository"
 	"testing"
 	"time"
-
-	"module_example/models"
 )
 
 type MockTokenCache struct {
@@ -39,7 +39,7 @@ type MockDB struct {
 	tokens map[string]models.Token
 }
 
-func (db *MockDB) QueryRow(query string, args ...interface{}) RowInterface {
+func (db *MockDB) QueryRow(query string, args ...interface{}) repositories.RowInterface {
 	panic("unimplemented")
 }
 
@@ -69,7 +69,7 @@ func (db *MockDB) Exec(query string, args ...interface{}) (sql.Result, error) {
 func TestGetToken_CacheHit(t *testing.T) {
 	cache := NewMockTokenCache()
 	db := NewMockDB()
-	repo := NewTokenRepository(db, cache)
+	repo := repositories.NewTokenRepository(db, cache)
 
 	token := &models.Token{ID: 1, Token: "test-token", ExpDate: time.Now()}
 	cache.SetToken("test-token", token)
@@ -86,7 +86,7 @@ func TestGetToken_CacheHit(t *testing.T) {
 func TestCreateToken(t *testing.T) {
 	cache := NewMockTokenCache()
 	db := NewMockDB()
-	repo := NewTokenRepository(db, cache)
+	repo := repositories.NewTokenRepository(db, cache)
 
 	token := models.Token{Token: "new-token", ExpDate: time.Now()}
 	err := repo.CreateToken(token)

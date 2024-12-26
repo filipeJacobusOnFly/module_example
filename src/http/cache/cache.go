@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"module_example/models"
+	"module_example/src/http/models"
 	"sync"
 )
 

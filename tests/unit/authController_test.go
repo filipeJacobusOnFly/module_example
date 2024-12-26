@@ -1,7 +1,8 @@
-package controllers
+package unit
 
 import (
-	"module_example/models"
+	controllers "module_example/src/http/controllers"
+	"module_example/src/http/models"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -43,7 +44,7 @@ func TestAuthMiddleware(t *testing.T) {
 			}
 
 			r := gin.New()
-			r.Use(AuthMiddleware(mockRepo))
+			r.Use(controllers.AuthMiddleware(mockRepo))
 			r.GET("/test", func(c *gin.Context) {
 				c.JSON(http.StatusOK, gin.H{"message": "success"})
 			})

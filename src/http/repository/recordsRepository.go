@@ -1,8 +1,8 @@
-package repositories
+package database
 
 import (
 	"database/sql"
-	"module_example/models"
+	"module_example/src/http/models"
 )
 
 type RecordRepository struct {

@@ -1,12 +1,12 @@
-package repositories_test
+package unit
 
 import (
 	"database/sql"
 	"testing"
 	"time"
 
-	"module_example/models"
-	"module_example/repositories"
+	"module_example/src/http/models"
+	repositories "module_example/src/http/repository"
 
 	_ "github.com/mattn/go-sqlite3"
 )
