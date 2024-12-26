@@ -1,10 +1,10 @@
 package database
 
 import (
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 )
 
 type Config struct {
@@ -14,7 +14,7 @@ type Config struct {
 func LoadConfig() *Config {
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatalf("Erro ao carregar arquivo .env: %s", err)
+		logrus.Fatalf("Erro ao carregar arquivo .env: %s", err)
 	}
 
 	return &Config{

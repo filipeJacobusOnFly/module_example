@@ -2,10 +2,11 @@ package workers
 
 import (
 	"encoding/json"
-	"log"
 	config "module_example/src/database"
 	"module_example/src/http/models"
 	repositories "module_example/src/http/repository"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/streadway/amqp"
 )
@@ -13,13 +14,13 @@ import (
 func ConsumeRecords(repo *repositories.RecordRepository, cfg *config.Config) {
 	conn, err := amqp.Dial(cfg.RabbitMQURL)
 	if err != nil {
-		log.Fatalf("Erro ao conectar ao RabbitMQ: %s", err)
+		logrus.Fatalf("Erro ao conectar ao RabbitMQ: %v", err)
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		log.Fatalf("Erro ao abrir canal: %s", err)
+		logrus.Fatalf("Erro ao abrir canal: %v", err)
 	}
 	defer ch.Close()
 
@@ -32,7 +33,7 @@ func ConsumeRecords(repo *repositories.RecordRepository, cfg *config.Config) {
 		nil,
 	)
 	if err != nil {
-		log.Fatalf("Erro ao declarar fila: %s", err)
+		logrus.Fatalf("Erro ao declarar fila: %v", err)
 	}
 
 	msgs, err := ch.Consume(
@@ -45,22 +46,22 @@ func ConsumeRecords(repo *repositories.RecordRepository, cfg *config.Config) {
 		nil,
 	)
 	if err != nil {
-		log.Fatalf("Erro ao consumir mensagens: %s", err)
+		logrus.Fatalf("Erro ao consumir mensagens: %v", err)
 	}
 
-	log.Println("Aguardando registros. Para sair pressione CTRL+C")
+	logrus.Info("Aguardando registros. Para sair pressione CTRL+C")
 
 	for msg := range msgs {
 		var record models.Record
 		if err := json.Unmarshal(msg.Body, &record); err != nil {
-			log.Printf("Erro ao deserializar registro: %s", err)
+			logrus.Warnf("Erro ao deserializar registro: %v", err)
 			continue
 		}
 
 		if err := repo.CreateRecords([]models.Record{record}); err != nil {
-			log.Printf("Erro ao armazenar registro no banco de dados: %s", err)
+			logrus.Errorf("Erro ao armazenar registro no banco de dados: %v", err)
 		} else {
-			log.Printf("Registro armazenado: %v", record)
+			logrus.Infof("Registro armazenado: %v", record)
 		}
 	}
 }

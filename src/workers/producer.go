@@ -2,10 +2,10 @@ package workers
 
 import (
 	"encoding/json"
-	"log"
-
 	config "module_example/src/database"
 	"module_example/src/http/models"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/streadway/amqp"
 )
@@ -13,13 +13,13 @@ import (
 func PublishRecord(record models.Record, cfg *config.Config) {
 	conn, err := amqp.Dial(cfg.RabbitMQURL)
 	if err != nil {
-		log.Fatalf("Erro ao conectar ao RabbitMQ: %s", err)
+		logrus.Fatalf("Erro ao conectar ao RabbitMQ: %v", err)
 	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		log.Fatalf("Erro ao abrir canal: %s", err)
+		logrus.Fatalf("Erro ao abrir canal: %v", err)
 	}
 	defer ch.Close()
 
@@ -32,12 +32,12 @@ func PublishRecord(record models.Record, cfg *config.Config) {
 		nil,
 	)
 	if err != nil {
-		log.Fatalf("Erro ao declarar fila: %s", err)
+		logrus.Fatalf("Erro ao declarar fila: %v", err)
 	}
 
 	body, err := json.Marshal(record)
 	if err != nil {
-		log.Fatalf("Erro ao serializar registro: %s", err)
+		logrus.Fatalf("Erro ao serializar registro: %v", err)
 	}
 
 	err = ch.Publish(
@@ -50,8 +50,8 @@ func PublishRecord(record models.Record, cfg *config.Config) {
 			Body:        body,
 		})
 	if err != nil {
-		log.Fatalf("Erro ao publicar mensagem: %s", err)
+		logrus.Fatalf("Erro ao publicar mensagem: %v", err)
 	}
 
-	log.Printf("Registro enviado: %v", record)
+	logrus.Infof("Registro enviado: %v", record)
 }

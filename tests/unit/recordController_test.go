@@ -13,10 +13,14 @@ import (
 	repositories "module_example/src/http/repository"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestRecordHandler(t *testing.T) {
+	// Set the log level to Info for the test
+	logrus.SetLevel(logrus.InfoLevel)
+
 	gin.SetMode(gin.TestMode)
 
 	repo := &repositories.RecordRepository{}
@@ -40,6 +44,7 @@ func TestRecordHandler(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		resp := httptest.NewRecorder()
+		logrus.Infof("Sending valid record: %+v", record)
 		router.ServeHTTP(resp, req)
 
 		assert.Equal(t, http.StatusAccepted, resp.Code)
@@ -48,6 +53,7 @@ func TestRecordHandler(t *testing.T) {
 		err = json.Unmarshal(resp.Body.Bytes(), &response)
 		assert.NoError(t, err)
 		assert.Equal(t, "Registro recebido", response["message"])
+		logrus.Infof("Received response: %+v", response)
 	})
 
 	t.Run("Deve retornar 400 ao receber dados inválidos", func(t *testing.T) {
@@ -58,6 +64,7 @@ func TestRecordHandler(t *testing.T) {
 		req.Header.Set("Content-Type", "application/json")
 
 		resp := httptest.NewRecorder()
+		logrus.Info("Sending invalid JSON data")
 		router.ServeHTTP(resp, req)
 
 		assert.Equal(t, http.StatusBadRequest, resp.Code)
@@ -66,5 +73,6 @@ func TestRecordHandler(t *testing.T) {
 		err = json.Unmarshal(resp.Body.Bytes(), &response)
 		assert.NoError(t, err)
 		assert.Equal(t, "Dados inválidos", response["error"])
+		logrus.Infof("Received error response: %+v", response)
 	})
 }

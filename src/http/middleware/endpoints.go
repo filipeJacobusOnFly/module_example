@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"log"
 	mainDB "module_example/src/database"
 	cache "module_example/src/http/cache"
 	"module_example/src/http/controllers"
 	repositories "module_example/src/http/repository"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -16,12 +17,19 @@ var (
 )
 
 func InitGin() {
+	// Configurando o logger
+	logrus.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp: true,
+	})
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Erro ao carregar o arquivo .env")
+		logrus.Fatal("Erro ao carregar o arquivo .env")
 	}
 
-	db, _ := mainDB.GetCon()
+	db, err := mainDB.GetCon()
+	if err != nil {
+		logrus.Fatal("Erro ao conectar ao banco de dados:", err)
+	}
 	cacheInstance = cache.NewTokenCache()
 	dbWrapper := &repositories.DBWrapper{DB: db}
 	tokenRepo := repositories.NewTokenRepository(dbWrapper, cacheInstance)
@@ -35,7 +43,8 @@ func InitGin() {
 	r.GET("/pdf", controllers.PdfHandler)
 	r.POST("/records", controllers.RecordHandler(recordRepo))
 
+	logrus.Info("Iniciando o servidor na porta 9051")
 	if err := r.Run(":9051"); err != nil {
-		log.Fatal("Erro ao iniciar o servidor:", err)
+		logrus.Fatal("Erro ao iniciar o servidor:", err)
 	}
 }

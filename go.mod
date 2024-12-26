@@ -7,9 +7,11 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-sqlite3 v1.14.24
+	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.1
 	github.com/streadway/amqp v1.1.0
 	github.com/stretchr/testify v1.9.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (

@@ -5,6 +5,8 @@ import (
 	repositories "module_example/src/http/repository"
 	"testing"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 type MockRecordRepository struct {
@@ -21,7 +23,11 @@ func (m *MockRecordRepository) CreateRecords(records []models.Record) error {
 }
 
 func TestStartBatchProcessing(t *testing.T) {
+	// Set the log level to Info for the test
+	logrus.SetLevel(logrus.InfoLevel)
+
 	repo := &MockRecordRepository{}
+	logrus.Info("Starting batch processing")
 	go repositories.StartBatchProcessing(repo)
 
 	for i := 0; i < 10000; i++ {
@@ -33,15 +39,22 @@ func TestStartBatchProcessing(t *testing.T) {
 
 	close(repositories.RecordChannel)
 
+	// Allow some time for processing
 	time.Sleep(1 * time.Second)
+
+	logrus.Infof("Expected to have processed 10000 records, currently have %d", len(repo.Records))
 
 	if len(repo.Records) != 10000 {
 		t.Errorf("Esperado 10000 registros, mas obteve %d", len(repo.Records))
+		logrus.Errorf("Test failed: expected 10000 records, but got %d", len(repo.Records))
 	}
 
 	for i, record := range repo.Records {
 		if record.RecordID != uint(i) {
 			t.Errorf("Registro %d tem RecordID %d, esperado %d", i, record.RecordID, i)
+			logrus.Errorf("Record mismatch: expected RecordID %d, but got %d", i, record.RecordID)
 		}
 	}
+
+	logrus.Info("Batch processing test completed successfully")
 }

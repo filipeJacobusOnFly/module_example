@@ -2,13 +2,12 @@ package database
 
 import (
 	"database/sql"
-	"log"
-
 	"os"
 	"sync"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -20,7 +19,7 @@ func GetCon() (*sql.DB, error) {
 	var err error
 	err = godotenv.Load(".env")
 	if err != nil {
-		log.Fatalf("Erro ao carregar arquivo .env: %s", err)
+		logrus.Fatalf("Erro ao carregar arquivo .env: %s", err)
 	}
 	once.Do(func() {
 		dsn := "host=" + os.Getenv("DB_HOST") +
@@ -32,7 +31,7 @@ func GetCon() (*sql.DB, error) {
 
 		db, err = sql.Open("postgres", dsn)
 		if err != nil {
-			log.Println("Erro ao conectar ao banco de dados:", err)
+			logrus.Error("Erro ao conectar ao banco de dados:", err)
 			return
 		}
 		db.SetMaxOpenConns(25)
@@ -40,7 +39,7 @@ func GetCon() (*sql.DB, error) {
 		db.SetConnMaxLifetime(0)
 
 		if err = db.Ping(); err != nil {
-			log.Println("Erro ao pingar o banco de dados:", err)
+			logrus.Error("Erro ao pingar o banco de dados:", err)
 		}
 	})
 
