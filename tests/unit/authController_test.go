@@ -16,7 +16,6 @@ type MockTokenRepository struct {
 	mock.Mock
 }
 
-// CreateToken implements database.TokenRepositoryInterface.
 func (m *MockTokenRepository) CreateToken(token models.Token) error {
 	panic("unimplemented")
 }

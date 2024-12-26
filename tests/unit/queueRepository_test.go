@@ -23,7 +23,7 @@ func (m *MockRecordRepository) CreateRecords(records []models.Record) error {
 }
 
 func TestStartBatchProcessing(t *testing.T) {
-	// Set the log level to Info for the test
+
 	logrus.SetLevel(logrus.InfoLevel)
 
 	repo := &MockRecordRepository{}
@@ -39,7 +39,6 @@ func TestStartBatchProcessing(t *testing.T) {
 
 	close(repositories.RecordChannel)
 
-	// Allow some time for processing
 	time.Sleep(1 * time.Second)
 
 	logrus.Infof("Expected to have processed 10000 records, currently have %d", len(repo.Records))

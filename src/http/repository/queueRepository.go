@@ -22,7 +22,7 @@ func StartBatchProcessing(repo RecordRepositoryInterface) {
 			logrus.Infof("Processando %d registros em lote", len(records))
 			if err := repo.CreateRecords(records); err != nil {
 				logrus.Errorf("Erro ao criar registros em lote: %v", err)
-				// Você pode optar por continuar ou lidar com o erro de outra forma
+
 				continue
 			}
 			logrus.Infof("Registros em lote criados com sucesso: %d", len(records))
@@ -30,7 +30,6 @@ func StartBatchProcessing(repo RecordRepositoryInterface) {
 		}
 	}
 
-	// Se houver registros restantes que não foram processados
 	if len(records) > 0 {
 		logrus.Infof("Processando %d registros restantes em lote", len(records))
 		if err := repo.CreateRecords(records); err != nil {

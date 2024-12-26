@@ -12,7 +12,7 @@ import (
 )
 
 func TestPdfHandler(t *testing.T) {
-	// Set the log level to Info for the test
+
 	logrus.SetLevel(logrus.InfoLevel)
 
 	gin.SetMode(gin.TestMode)

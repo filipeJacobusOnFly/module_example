@@ -17,7 +17,7 @@ var (
 )
 
 func InitGin() {
-	// Configurando o logger
+
 	logrus.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp: true,
 	})
